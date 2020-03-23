@@ -43,9 +43,7 @@ class LocationResult {
 class AddressComponent {
   String name;
   String shortName;
-
   AddressComponent(this.name, this.shortName,);
-
 }
 
 /// Nearby place data will be deserialized into this model.
@@ -510,8 +508,6 @@ class PlacePickerState extends State<PlacePicker> {
           this.locationResult.administrativeAreaLevel2 = AddressComponent(result['address_components'][4]['long_name'], result['address_components'][4]['short_name'],);
           this.locationResult.city = AddressComponent(result['address_components'][3]['long_name'], result['address_components'][3]['short_name'],);
           this.locationResult.subLocalityLevel1 = AddressComponent(result['address_components'][2]['long_name'], result['address_components'][2]['short_name'],);
-          this.locationResult.subLocalityLevel2 = AddressComponent(result['address_components'][1]['long_name'], result['address_components'][1]['short_name'],);
-
         });
       }
     }).catchError((error) {
