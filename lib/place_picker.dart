@@ -91,8 +91,9 @@ class PlacePicker extends StatefulWidget {
   /// Location to be displayed when screen is showed. If this is set or not null, the
   /// map does not pan to the user's current location.
   final LatLng displayLocation;
+  final bool displayNearbyPlaces;
 
-  PlacePicker(this.apiKey, {this.displayLocation});
+  PlacePicker(this.apiKey, {this.displayLocation, this.displayNearbyPlaces = true});
 
   @override
   State<StatefulWidget> createState() {
@@ -186,41 +187,45 @@ class PlacePickerState extends State<PlacePicker> {
           ),
           this.hasSearchTerm
               ? SizedBox()
-              : Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      SelectPlaceAction(getLocationName(), () {
-                        Navigator.of(context).pop(this.locationResult);
-                      }),
-                      Divider(
-                        height: 8,
-                      ),
-                      Padding(
-                        child: Text(
-                          "Nearby Places",
-                          style: TextStyle(
-                            fontSize: 16,
+              : !widget.displayNearbyPlaces
+                ? SelectPlaceAction(getLocationName(), () {
+                    Navigator.of(context).pop(this.locationResult);
+                  })
+                : Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        SelectPlaceAction(getLocationName(), () {
+                          Navigator.of(context).pop(this.locationResult);
+                        }),
+                        Divider(
+                          height: 8,
+                        ),
+                        Padding(
+                          child: Text(
+                            "Nearby Places",
+                            style: TextStyle(
+                              fontSize: 16,
+                            ),
+                          ),
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 24,
+                            vertical: 8,
                           ),
                         ),
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 24,
-                          vertical: 8,
+                        Expanded(
+                          child: ListView(
+                            children: this
+                                .nearbyPlaces
+                                .map((it) => NearbyPlaceItem(it, () {
+                                      moveToLocation(it.latLng);
+                                    }))
+                                .toList(),
+                          ),
                         ),
-                      ),
-                      Expanded(
-                        child: ListView(
-                          children: this
-                              .nearbyPlaces
-                              .map((it) => NearbyPlaceItem(it, () {
-                                    moveToLocation(it.latLng);
-                                  }))
-                              .toList(),
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
         ],
       ),
     );
