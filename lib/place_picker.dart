@@ -185,47 +185,45 @@ class PlacePickerState extends State<PlacePicker> {
               markers: markers,
             ),
           ),
-          this.hasSearchTerm
-              ? SizedBox()
-              : !widget.displayNearbyPlaces
-                ? SelectPlaceAction(getLocationName(), () {
-                    Navigator.of(context).pop(this.locationResult);
-                  })
-                : Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        SelectPlaceAction(getLocationName(), () {
-                          Navigator.of(context).pop(this.locationResult);
-                        }),
-                        Divider(
-                          height: 8,
-                        ),
-                        Padding(
-                          child: Text(
-                            "Nearby Places",
-                            style: TextStyle(
-                              fontSize: 16,
-                            ),
-                          ),
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 24,
-                            vertical: 8,
-                          ),
-                        ),
-                        Expanded(
-                          child: ListView(
-                            children: this
-                                .nearbyPlaces
-                                .map((it) => NearbyPlaceItem(it, () {
-                                      moveToLocation(it.latLng);
-                                    }))
-                                .toList(),
-                          ),
-                        ),
-                      ],
+          !widget.displayNearbyPlaces
+            ? SelectPlaceAction(getLocationName(), () {
+                Navigator.of(context).pop(this.locationResult);
+              })
+            : Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    SelectPlaceAction(getLocationName(), () {
+                      Navigator.of(context).pop(this.locationResult);
+                    }),
+                    Divider(
+                      height: 8,
                     ),
-                  ),
+                    Padding(
+                      child: Text(
+                        "Nearby Places",
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 24,
+                        vertical: 8,
+                      ),
+                    ),
+                    Expanded(
+                      child: ListView(
+                        children: this
+                            .nearbyPlaces
+                            .map((it) => NearbyPlaceItem(it, () {
+                                  moveToLocation(it.latLng);
+                                }))
+                            .toList(),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
         ],
       ),
     );
