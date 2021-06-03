@@ -27,8 +27,6 @@ class LocationResult {
 
   AddressComponent subLocalityLevel1;
 
-  AddressComponent subLocalityLevel2;
-
   String postalCode;
 
   String placeId;
