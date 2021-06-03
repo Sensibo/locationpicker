@@ -119,31 +119,10 @@ class PlacePickerState extends State<PlacePicker> {
             ),
           ),
           if (!this.hasSearchTerm)
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  SelectPlaceAction(
-                      getLocationName(),
-                      () => Navigator.of(context).pop(this.locationResult),
-                      widget.localizationItem.tapToSelectLocation),
-                  Divider(height: 8),
-                  Padding(
-                    child: Text(widget.localizationItem.nearBy,
-                        style: TextStyle(fontSize: 16)),
-                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-                  ),
-                  Expanded(
-                    child: ListView(
-                      children: nearbyPlaces
-                          .map((it) => NearbyPlaceItem(
-                              it, () => moveToLocation(it.latLng)))
-                          .toList(),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            SelectPlaceAction(
+                getLocationName(),
+                () => Navigator.of(context).pop(this.locationResult),
+                widget.localizationItem.tapToSelectLocation),
         ],
       ),
     );
@@ -363,48 +342,6 @@ class PlacePickerState extends State<PlacePicker> {
     });
   }
 
-  /// Fetches and updates the nearby places to the provided lat,lng
-  void getNearbyPlaces(LatLng latLng) async {
-    try {
-      final url = Uri.parse(
-          "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
-          "key=${widget.apiKey}&location=${latLng.latitude},${latLng.longitude}"
-          "&radius=150&language=${widget.localizationItem.languageCode}");
-
-      final response = await http.get(url);
-
-      if (response.statusCode != 200) {
-        throw Error();
-      }
-
-      final responseJson = jsonDecode(response.body);
-
-      if (responseJson['results'] == null) {
-        throw Error();
-      }
-
-      this.nearbyPlaces.clear();
-
-      for (Map<String, dynamic> item in responseJson['results']) {
-        final nearbyPlace = NearbyPlace()
-          ..name = item['name']
-          ..icon = item['icon']
-          ..latLng = LatLng(item['geometry']['location']['lat'],
-              item['geometry']['location']['lng']);
-
-        this.nearbyPlaces.add(nearbyPlace);
-      }
-
-      // to update the nearby places
-      setState(() {
-        // this is to require the result to show
-        this.hasSearchTerm = false;
-      });
-    } catch (e) {
-      //
-    }
-  }
-
   /// This method gets the human readable name of the location. Mostly appears
   /// to be the road name and the locality.
   void reverseGeocodeLatLng(LatLng latLng) async {
@@ -436,8 +373,7 @@ class PlacePickerState extends State<PlacePicker> {
             administrativeAreaLevel1,
             administrativeAreaLevel2,
             city,
-            subLocalityLevel1,
-            subLocalityLevel2;
+            subLocalityLevel1;
         bool isOnStreet = false;
         if (result['address_components'] is List<dynamic> &&
             result['address_components'].length != null &&
@@ -464,8 +400,6 @@ class PlacePickerState extends State<PlacePicker> {
             } else {
               if (types.contains("sublocality_level_1")) {
                 subLocalityLevel1 = shortName;
-              } else if (types.contains("sublocality_level_2")) {
-                subLocalityLevel2 = shortName;
               } else if (types.contains("locality")) {
                 locality = shortName;
               } else if (types.contains("administrative_area_level_2")) {
@@ -498,9 +432,7 @@ class PlacePickerState extends State<PlacePicker> {
               shortName: administrativeAreaLevel2)
           ..city = AddressComponent(name: city, shortName: city)
           ..subLocalityLevel1 = AddressComponent(
-              name: subLocalityLevel1, shortName: subLocalityLevel1)
-          ..subLocalityLevel2 = AddressComponent(
-              name: subLocalityLevel2, shortName: subLocalityLevel2);
+              name: subLocalityLevel1, shortName: subLocalityLevel1);
       });
     } catch (e) {
       print(e);
@@ -520,8 +452,6 @@ class PlacePickerState extends State<PlacePicker> {
     setMarker(latLng);
 
     reverseGeocodeLatLng(latLng);
-
-    getNearbyPlaces(latLng);
   }
 
   void moveToCurrentUserLocation() {
