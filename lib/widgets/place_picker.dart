@@ -118,7 +118,7 @@ class PlacePickerState extends State<PlacePicker> {
               markers: markers,
             ),
           ),
-          if (!this.hasSearchTerm)
+          // if (!this.hasSearchTerm)
             SelectPlaceAction(
                 getLocationName(),
                 () => Navigator.of(context).pop(this.locationResult),
