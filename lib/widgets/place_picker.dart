@@ -29,9 +29,12 @@ class PlacePicker extends StatefulWidget {
   final LatLng? displayLocation;
   LocalizationItem? localizationItem;
   LatLng defaultLocation = LatLng(10.5381264, 73.8827201);
+  final bool displayNearbyPlaces;
 
   PlacePicker(this.apiKey,
-      {this.displayLocation, this.localizationItem, LatLng? defaultLocation}) {
+      {this.displayLocation, this.localizationItem,
+      LatLng? defaultLocation, this.displayNearbyPlaces = true
+      }) {
     if (this.localizationItem == null) {
       this.localizationItem = new LocalizationItem();
     }
@@ -177,38 +180,13 @@ class PlacePickerState extends State<PlacePicker> {
                       markers: markers,
                     ),
             ),
-            if (!this.hasSearchTerm)
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                    SelectPlaceAction(getLocationName(), () {
-                      if (Platform.isAndroid) {
-                        _delayedPop();
-                      } else {
-                        Navigator.of(context).pop(this.locationResult);
-                      }
-                    }, widget.localizationItem!.tapToSelectLocation),
-                    Divider(height: 8),
-                    Padding(
-                      child: Text(widget.localizationItem!.nearBy,
-                          style: TextStyle(fontSize: 16)),
-                      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-                    ),
-                    Expanded(
-                      child: ListView(
-                        children: nearbyPlaces
-                            .map((it) => NearbyPlaceItem(it, () {
-                                  if (it.latLng != null) {
-                                    moveToLocation(it.latLng!);
-                                  }
-                                }))
-                            .toList(),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+            SelectPlaceAction(getLocationName(), () {
+              if (Platform.isAndroid) {
+                _delayedPop();
+              } else {
+                Navigator.of(context).pop(this.locationResult);
+              }
+            }, widget.localizationItem!.tapToSelectLocation),
           ],
         ),
       ),
