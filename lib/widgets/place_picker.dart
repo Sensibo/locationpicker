@@ -231,12 +231,9 @@ class PlacePickerState extends State<PlacePicker> {
     final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
     final size = renderBox?.size;
 
-    final RenderBox? appBarBox =
-        this.appBarKey.currentContext?.findRenderObject() as RenderBox?;
-
     this.overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
-        top: renderBox?.localToGlobal(Offset.zero).dy ?? 0 + 60,
+        top: 200,
         width: size?.width,
         child: Material(
           elevation: 1,
@@ -362,15 +359,12 @@ class PlacePickerState extends State<PlacePicker> {
     final RenderBox? renderBox = context.findRenderObject() as RenderBox?;
     Size? size = renderBox?.size;
 
-    final RenderBox? appBarBox =
-        this.appBarKey.currentContext?.findRenderObject() as RenderBox?;
-
     clearOverlay();
 
     this.overlayEntry = OverlayEntry(
       builder: (context) => Positioned(
         width: size?.width,
-        top: renderBox?.localToGlobal(Offset.zero).dy ?? 0 + 60,
+        top: 200,
         child: Material(elevation: 1, child: Column(children: suggestions)),
       ),
     );
