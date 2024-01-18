@@ -274,7 +274,7 @@ class PlacePickerState extends State<PlacePicker> {
 
       if (this.locationResult != null) {
         endpoint += "&location=${this.locationResult!.latLng?.latitude}," +
-            "${this.locationResult!.latLng?.longitude}";
+            "${this.locationResult!.latLng?.longitude}&locationbias=circle:2000@${this.locationResult!.latLng?.latitude},${this.locationResult!.latLng?.longitude}";
       }
 
       final response = await http.get(Uri.parse(endpoint));
