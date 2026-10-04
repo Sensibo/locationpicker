@@ -29,6 +29,8 @@ class SearchInputState extends State<SearchInput> {
 
   @override
   void dispose() {
+    // A pending search would call back into the picker after it is gone.
+    this.debouncer?.cancel();
     this.editController.removeListener(this.onSearchInputChange);
     this.editController.dispose();
 

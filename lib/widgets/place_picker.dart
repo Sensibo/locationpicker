@@ -214,7 +214,8 @@ class PlacePickerState extends State<PlacePicker> {
 
     previousSearchTerm = place;
 
-    if (context == null) {
+    // The context getter throws once the picker is unmounted.
+    if (!mounted) {
       return;
     }
 
@@ -278,6 +279,11 @@ class PlacePickerState extends State<PlacePicker> {
       }
 
       final response = await http.get(Uri.parse(endpoint));
+
+      // The picker may have closed while the request was in flight.
+      if (!mounted) {
+        return;
+      }
 
       if (response.statusCode != 200) {
         throw Error();
